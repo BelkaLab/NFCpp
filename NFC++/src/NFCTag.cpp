@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NFCTag.h"
 
-NFCTag::NFCTag( SCARDCONTEXT handle, int proto, NFCReader* reader, byte* ATRbytes )
+NFCTag::NFCTag( SCARDHANDLE handle, int proto, NFCReader* reader, byte* ATRbytes )
 {
 	this->handle = handle;
 	this->proto = proto;
