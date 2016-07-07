@@ -17,24 +17,43 @@ int main()
 		std::cout << "Done!" << std::endl;
 
 		std::cout << "Listing NFC Readers.. ";
-		std::vector< NFCReader* > r = handler.getReaders();
+		std::vector< NFCReader* > readers = handler.getReaders();
 		std::cout << "Done!" << std::endl;
 
-		if( r.size() == 0 )
+		if( readers.size() == 0 )
 		{
-			std::cout << "No reader found" << std::endl;
+			std::cout << "No reader found." << std::endl;
 		}
 		else
 		{
-			std::cout << "Available readers: " << std::endl;
+			std::cout << std::endl << "Available readers: " << std::endl;
 			int readerIx = 0;
-			for( std::vector< NFCReader* >::iterator it = r.begin(); it != r.end(); ++it )
+			for( std::vector< NFCReader* >::iterator it = readers.begin(); it != readers.end(); ++it )
 			{
-				std::cout << " " << ++readerIx << ": " << (*it)->getName() << std::endl;
+				std::cout << " " << readerIx++ << ": " << (*it)->getName() << std::endl;
 			}
 
-			NFCReader* reader = r[0];
-			NFCTag* tag = reader->Connect();
+			int rID = -1;
+			while( rID < 0 || rID >= readers.size() )
+			{
+				std::cout << "Select a reader: ";
+				std::cin >> rID;
+			}
+
+			NFCReader* reader = readers[rID];
+
+			std::cout << std::endl << "Put a card on reader '" << reader->getName() << "'.." << std::endl;
+			NFCTag* tag = NULL;
+			while( tag == NULL ) 
+			{
+				try
+				{
+					tag = reader->Connect();
+				}
+				catch (std::runtime_error) {
+					_sleep( 100 );
+				}
+			}
 			byte* t = tag->ReadAll();
 			for( int i = 0; i < 144; i++ )
 			{
@@ -54,7 +73,9 @@ int main()
 	}
 	catch( std::exception e )
 	{
-		std::cout << "An exception occurred: " << e.what();
+		std::cout << "An exception occurred: " << e.what() << std::endl;
+		system( "pause" );
+
 		return 1;
 	}
 
