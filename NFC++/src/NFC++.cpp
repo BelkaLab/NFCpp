@@ -19,7 +19,7 @@ void NFCHandler::Init()
 
 	if( retCode != SCARD_S_SUCCESS )
 	{
-		throw new std::runtime_error( "Failed extablishing context: " + GetScardErrMsg( retCode ) );
+		throw std::runtime_error( "Failed extablishing context: " + GetScardErrMsg( retCode ) );
 	}
 
 	// Get PC/SC readers available
@@ -32,7 +32,7 @@ void NFCHandler::Init()
 	}
 	else if( retCode != SCARD_S_SUCCESS )
 	{
-		throw new std::runtime_error( "Failed listing readers: " + GetScardErrMsg( retCode ) );
+		throw std::runtime_error( "Failed listing readers: " + GetScardErrMsg( retCode ) );
 	}
 
 	// Fill reader list
@@ -64,7 +64,7 @@ void NFCHandler::Init()
 		if( rdrName.find( "ACS" ) == 0 )
 			readers.push_back( new ACSReader( hContext, rdrName ) );
 		else 
-			throw new std::runtime_error( "Unsupported reader: " + rdrName );
+			throw std::runtime_error( "Unsupported reader: " + rdrName );
 
 		rdrName = "";
 		idxBytes++;
@@ -80,7 +80,7 @@ void NFCHandler::Release()
 		int retCode = SCardReleaseContext( hContext );
 
 		if( retCode != SCARD_S_SUCCESS )
-			throw new std::runtime_error( "Failed release!" );
+			throw std::runtime_error( "Failed release!" );
 
 		hContext = NULL;
 

@@ -188,7 +188,7 @@ NFCTag* ACSReader::Connect()
 		SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &handle, &proto );
 
 	if( retCode != SCARD_S_SUCCESS )
-		throw new std::runtime_error( "Error creating a connection: " + GetScardErrMsg( retCode ) );
+		throw std::runtime_error( "Error creating a connection: " + GetScardErrMsg( retCode ) );
 
 	//name = ws2s( tName );
 	byte* ATR = GetATR( handle, proto, &ATRLen );
@@ -199,7 +199,7 @@ NFCTag* ACSReader::Connect()
 void ACSReader::LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, byte* keyData )
 {
 	//if( keyData.Length != 6 )
-	//	throw new std::invalid_argument( "Keys must be 6 byte long" );
+	//	throw std::invalid_argument( "Keys must be 6 byte long" );
 
 	byte KeyT = keyType == KeyTypes::TypeA ? (byte)0x60 : (byte)0x61;
 	byte KeyN = keyType == KeyTypes::TypeA ? (byte)0x00 : (byte)0x01;
@@ -227,7 +227,7 @@ byte* ACSReader::Read( SCARDHANDLE handle, int proto, byte page )
 void ACSReader::Write( SCARDHANDLE handle, int proto, byte page, byte* data, int len )
 {
 	if( len != 4 ) 
-		throw new std::invalid_argument( "Page write must be of 4 bytes" );
+		throw std::invalid_argument( "Page write must be of 4 bytes" );
 
 	byte* buffer = new byte[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
 	// add data from byte 5 on
@@ -249,19 +249,19 @@ byte* ACSReader::Transmit( SCARDHANDLE handle, int proto, byte* cmdBytes, int le
 		&ioRequest, rcvBytes, &rcvLenght );
 
 	if( retCode != SCARD_S_SUCCESS )
-		throw new std::runtime_error( "Failed querying tag: " + GetScardErrMsg( retCode ) );
+		throw std::runtime_error( "Failed querying tag: " + GetScardErrMsg( retCode ) );
 
 	if( !(rcvBytes[rcvLenght - 2] == 0x90 && rcvBytes[rcvLenght - 1] == 0x00) )
 	{
 		if( rcvBytes[rcvLenght - 2] == 0x63 && rcvBytes[rcvLenght - 1] == 0x00 )
-			throw new std::runtime_error( "Operation failed!" );
+			throw std::runtime_error( "Operation failed!" );
 
 		if( rcvBytes[rcvLenght - 2] == 0x6A && rcvBytes[rcvLenght - 1] == 0x81 )
-			throw new std::runtime_error( "Operation not supported!" );
+			throw std::runtime_error( "Operation not supported!" );
 
 		char buff[256];
 		sprintf_s( buff, "Operation returned %02X %02X", rcvBytes[rcvLenght - 2], rcvBytes[rcvLenght - 1] );
-		throw new std::runtime_error( buff );
+		throw std::runtime_error( buff );
 	}
 
 	byte* returnBytes = new byte[rcvLenght - 2];

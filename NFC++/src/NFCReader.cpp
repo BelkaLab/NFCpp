@@ -21,7 +21,7 @@ byte* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
 
 	if( retCode != SCARD_S_SUCCESS )
 	{
-		throw new std::runtime_error( "Failed querying tag status: " + GetScardErrMsg( retCode ) );
+		throw std::runtime_error( "Failed querying tag status: " + GetScardErrMsg( retCode ) );
 	}
 
 	byte* ATR = new byte[maxATRLen];
@@ -41,8 +41,8 @@ NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, byte* ATR, int ATRLe
 		return new UltralightTag( handle, proto, this, ATR );
 
 	default:
+		throw std::runtime_error( "Unsupported tag" );
 		//return new UnknownTag( handle, proto, reader, ATR );
-		throw new std::runtime_error( "Unsupported tag" );
 	}
 }
 
@@ -62,7 +62,7 @@ NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, byte* ATR, int ATRLe
 //
 //		if( hThread == NULL )
 //		{
-//			throw new std::runtime_error( "Error creating Pooler thread" );
+//			throw std::runtime_error( "Error creating Pooler thread" );
 //			pollerThread = NULL;
 //		}
 //		else
@@ -84,7 +84,7 @@ NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, byte* ATR, int ATRLe
 //	retCode = SCardGetStatusChange( hContext, 100, &state, 1 );
 //	if( retCode != SCARD_S_SUCCESS )
 //	{
-//		throw new std::runtime_error( "Failed initial get status change: " + GetScardErrMsg( retCode ) );
+//		throw std::runtime_error( "Failed initial get status change: " + GetScardErrMsg( retCode ) );
 //	}
 //
 //	state[0].RdrCurrState = state[0].RdrEventState;

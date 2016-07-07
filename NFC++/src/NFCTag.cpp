@@ -52,6 +52,6 @@ void NFCTag::Dispose()
 
 	if( retCode != SCARD_S_SUCCESS )
 	{
-		throw new std::runtime_error( "Failed diconnection!" );
+		throw std::runtime_error( "Failed diconnection!" );
 	}
 }

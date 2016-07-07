@@ -26,7 +26,7 @@ byte* HexToBytes( std::string payload )
 
 	if( payload.length() % 2 > 0 )
 	{
-		throw new std::invalid_argument( "String is not composed of hex pairs" );
+		throw std::invalid_argument( "String is not composed of hex pairs" );
 		return NULL;
 	}
 
