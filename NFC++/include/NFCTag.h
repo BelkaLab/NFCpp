@@ -8,7 +8,7 @@ class NFCTag
 {
 public:
 	NFCTag() {}
-	NFCTag( SCARDCONTEXT handle, int Proto, NFCReader* reader, byte* ATRbytes );
+	NFCTag( SCARDHANDLE handle, int Proto, NFCReader* reader, byte* ATRbytes );
 
 	void LoadKey( KeyTypes keyType, byte* keyData );
 	void Authenticate( KeyTypes keyType, byte sector );
@@ -30,7 +30,7 @@ public:
 	void Dispose();
 
 protected:
-	SCARDCONTEXT handle;
+	SCARDHANDLE handle;
 	int proto;
 	NFCReader* reader;
 

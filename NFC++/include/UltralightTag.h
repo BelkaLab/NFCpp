@@ -7,7 +7,7 @@
 class UltralightTag : public NFCTag
 {
 public:
-	UltralightTag( SCARDCONTEXT handle, int proto, NFCReader* reader, byte* ATRbytes ):
+	UltralightTag( SCARDHANDLE handle, int proto, NFCReader* reader, byte* ATRbytes ):
 		NFCTag( handle, proto, reader, ATRbytes ) 
 	{
 	}
