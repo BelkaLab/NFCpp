@@ -6,16 +6,14 @@ class NFC_API NFCHandler
 {
 public:
 	NFCHandler() :
-		hContext( NULL ),
-		defaultReader( 0 )
+		hContext( NULL )
 	{
 	}
 
 	void Init();
 	void Release();
 
-	bool IsInitialized() { return hContext != NULL; }
-	int defaultReader = 0;
+	bool IsInitialized() const { return hContext != NULL; }
 
 	const std::vector< NFCReader* > getReaders() const {
 		return readers;

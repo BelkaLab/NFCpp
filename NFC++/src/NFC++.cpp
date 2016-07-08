@@ -12,7 +12,12 @@ void NFCHandler::Init()
 		Release();
 	}
 
-	readers.clear();
+	if( readers.size() )
+	{
+		for( std::vector< NFCReader* >::iterator it = readers.begin(); it != readers.end(); ++it )
+			delete *it;
+		readers.clear();
+	}
 
 	// Get context
 	LONG retCode = SCardEstablishContext( SCARD_SCOPE_USER, NULL, NULL, &hContext );
@@ -69,8 +74,6 @@ void NFCHandler::Init()
 		rdrName = "";
 		idxBytes++;
 	}
-
-	defaultReader = 0;
 }
 
 void NFCHandler::Release()
