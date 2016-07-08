@@ -24,8 +24,6 @@
 // Windows Header Files:
 #include <windows.h>
 
-typedef unsigned char byte;
-
 #include <vector>
 #include <string>
 

@@ -54,8 +54,8 @@ int main()
 					_sleep( 100 );
 				}
 			}
-			byte numPages = 225;
-			byte* t = tag->ReadAll( numPages );
+			uint8_t numPages = 225;
+			uint8_t* t = tag->ReadAll( numPages );
 
 			std::cout << std::endl << "[page]: b0 b1 b2 b3";
 			for( int page = 0; page < numPages; page++ )

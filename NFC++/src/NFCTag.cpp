@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NFCTag.h"
 
-NFCTag::NFCTag( SCARDHANDLE handle, int proto, NFCReader* reader, byte* ATRbytes )
+NFCTag::NFCTag( SCARDHANDLE handle, int proto, NFCReader* reader, uint8_t* ATRbytes )
 {
 	this->handle = handle;
 	this->proto = proto;
@@ -16,22 +16,22 @@ NFCTag::NFCTag( SCARDHANDLE handle, int proto, NFCReader* reader, byte* ATRbytes
 	UID = BytesToHex(bUID, 32);
 }
 
-void NFCTag::LoadKey( KeyTypes keyType, byte* keyData )
+void NFCTag::LoadKey( KeyTypes keyType, uint8_t* keyData )
 {
 	reader->LoadKey( handle, proto, keyType, keyData );
 }
 
-void NFCTag::Authenticate( KeyTypes keyType, byte sector )
+void NFCTag::Authenticate( KeyTypes keyType, uint8_t sector )
 {
 	reader->Authenticate( handle, proto, keyType, sector );
 }
 
-byte* NFCTag::Read( byte page )
+uint8_t* NFCTag::Read( uint8_t page )
 {
 	return reader->Read( handle, proto, page );
 }
 
-void NFCTag::Write( byte page, byte* data, int len )
+void NFCTag::Write( uint8_t page, uint8_t* data, int len )
 {
 	reader->Write( handle, proto, page, data, len );
 }

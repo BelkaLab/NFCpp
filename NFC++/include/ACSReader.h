@@ -16,15 +16,15 @@ public:
 	// Virtual functions implementations
 	virtual NFCTag* Connect();
 
-	virtual void LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, byte* keyData );
-	virtual void Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, byte sector );
+	virtual void LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t* keyData );
+	virtual void Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t sector );
 
-	virtual byte* Read( SCARDHANDLE handle, int proto, byte page );
-	virtual void Write( SCARDHANDLE handle, int proto, byte Page, byte* Data, int len );
+	virtual uint8_t* Read( SCARDHANDLE handle, int proto, uint8_t page );
+	virtual void Write( SCARDHANDLE handle, int proto, uint8_t Page, uint8_t* Data, int len );
 
-	virtual byte*   ParseUID( SCARDHANDLE handle, int proto );
-	virtual TagType ParseATR( byte* bATR, int ATRlen );
+	virtual uint8_t*   ParseUID( SCARDHANDLE handle, int proto );
+	virtual TagType ParseATR( uint8_t* bATR, int ATRlen );
 
 private:
-	virtual byte* Transmit( SCARDHANDLE handle, int proto, byte* cmdBytes, int len );
+	virtual uint8_t* Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, int len );
 };

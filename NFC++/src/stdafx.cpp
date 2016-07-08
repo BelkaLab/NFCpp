@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 
-std::string BytesToHex( byte* bytes, int numBytes )
+std::string BytesToHex( uint8_t* bytes, int numBytes )
 {
 	std::string hex = "";
 	char buff[32];
@@ -17,7 +17,7 @@ std::string BytesToHex( byte* bytes, int numBytes )
 	return hex;
 }
 
-byte* HexToBytes( std::string payload )
+uint8_t* HexToBytes( std::string payload )
 {
 	while( payload.find( " " ) ) 
 	{
@@ -30,7 +30,7 @@ byte* HexToBytes( std::string payload )
 		return NULL;
 	}
 
-	byte* bytes = new byte[payload.length() / 2];
+	uint8_t* bytes = new uint8_t[payload.length() / 2];
 	for( size_t index = 0; index < payload.length() / 2; index++ )
 	{
 		bytes[index] = 0xFF & strtoul( payload.substr( index * 2, 2 ).c_str(), NULL, 16 );
