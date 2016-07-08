@@ -30,7 +30,7 @@ public:
 	//	Write( 0x04, new byte[]{ 0x03, 0x00, 0xFE, 0x00 } ); // Empty NDEF record plus terminator
 	//}
 
-	byte* ReadAll();
+	byte* ReadAll( byte numPages );
 
 	void WriteAll( byte* data, int len );
 

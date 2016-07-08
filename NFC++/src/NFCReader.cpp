@@ -42,7 +42,6 @@ NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, byte* ATR, int ATRLe
 
 	default:
 		throw std::runtime_error( "Unsupported tag" );
-		//return new UnknownTag( handle, proto, reader, ATR );
 	}
 }
 

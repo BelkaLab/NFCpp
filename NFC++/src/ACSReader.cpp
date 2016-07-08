@@ -231,7 +231,7 @@ void ACSReader::Write( SCARDHANDLE handle, int proto, byte page, byte* data, int
 
 	byte* buffer = new byte[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
 	// add data from byte 5 on
-	memcpy( (void*)buffer[5], data, 4 );
+	memcpy( &buffer[5], data, 4 );
 	Transmit( handle, proto, buffer, 9 );
 }
 
@@ -266,6 +266,7 @@ byte* ACSReader::Transmit( SCARDHANDLE handle, int proto, byte* cmdBytes, int le
 
 	byte* returnBytes = new byte[rcvLenght - 2];
 	memcpy( returnBytes, rcvBytes, rcvLenght - 2 );
+	delete[] rcvBytes;
 
 	return returnBytes;
 }

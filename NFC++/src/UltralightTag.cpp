@@ -1,20 +1,17 @@
 #include "stdafx.h"
 #include "UltralightTag.h"
 
-byte* UltralightTag::ReadAll()
+// http://stackoverflow.com/questions/28228993/how-to-read-binary-blocks-of-mifare-card
+byte* UltralightTag::ReadAll( byte numPages )
 {
 	const byte chunkSize = 0x04;
-	//const byte bytesToRead = 48;
-	const byte bytesToRead = 144;
 
-	byte* rawData = new byte[bytesToRead];
-	int pagesToRead = (bytesToRead / chunkSize);
-	for( int i = 0; i < pagesToRead; i++ )
+	byte* rawData = new byte[numPages * chunkSize];
+	for( byte pageIx = 0; pageIx < numPages; pageIx++ )
 	{
-		byte pageIndex = (byte)(i + chunkSize);
-		byte* pageContent = Read( pageIndex );
+		byte* pageContent = Read( pageIx );
 
-		memcpy( &rawData[i *chunkSize], pageContent, chunkSize );
+		memcpy( &rawData[pageIx *chunkSize], pageContent, chunkSize );
 		delete[] pageContent;
 	}
 	return rawData;
@@ -23,12 +20,14 @@ byte* UltralightTag::ReadAll()
 void UltralightTag::WriteAll( byte* data, int len )
 {
 	const byte chunkSize = 0x04;
-	byte* buffer = new byte[4];
-	for( int i = 0; i < (len / 4); i++ )
+
+	byte* buffer = new byte[chunkSize];
+	for( int pageIx = 0; pageIx < (len / chunkSize); pageIx++ )
 	{
-		memcpy( buffer, &data[ i * chunkSize], chunkSize );
-		Write( (byte)(i  * 4), buffer, chunkSize );
+		memcpy( buffer, &data[ pageIx * chunkSize], chunkSize );
+		Write( (byte)pageIx, buffer, chunkSize );
 	}
+	delete[] buffer;
 }
 
 void UltralightTag::Lock()

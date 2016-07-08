@@ -54,14 +54,31 @@ int main()
 					_sleep( 100 );
 				}
 			}
-			byte* t = tag->ReadAll();
-			for( int i = 0; i < 144; i++ )
+			byte numPages = 225;
+			byte* t = tag->ReadAll( numPages );
+
+			std::cout << std::endl << "[page]: b0 b1 b2 b3";
+			for( int page = 0; page < numPages; page++ )
 			{
-				std::cout.width( 2 );
-				std::cout.fill( '0' );
-				std::cout << std::uppercase << std::hex << (int)t[i] << " ";
-				if( i % 8 == 7 ) 
-					std::cout << std::endl;
+				// print page number
+				std::cout << std::endl << "[";
+				std::cout.width( 4 );
+				std::cout.fill( ' ' );
+				std::cout << std::dec <<  page << "]: ";
+				
+				// print raw page bytes
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 0] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 1] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 2] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 3] << " ";
+				
+				// print ascii content where possible, filled lock (ASCII 178) where non-printable characters are
+				std::cout << " | ";
+				std::cout << (t[page * 4 + 0] == 0 ? ' ' : (isprint( t[page * 4 + 0] ) ? (char)t[page * 4 + 0] : (char)178)) << " ";
+				std::cout << (t[page * 4 + 1] == 0 ? ' ' : (isprint( t[page * 4 + 1] ) ? (char)t[page * 4 + 1] : (char)178)) << " ";
+				std::cout << (t[page * 4 + 2] == 0 ? ' ' : (isprint( t[page * 4 + 2] ) ? (char)t[page * 4 + 2] : (char)178)) << " ";
+				std::cout << (t[page * 4 + 3] == 0 ? ' ' : (isprint( t[page * 4 + 3] ) ? (char)t[page * 4 + 3] : (char)178)) << " ";
+
 			}
 			delete[] t;
 		}

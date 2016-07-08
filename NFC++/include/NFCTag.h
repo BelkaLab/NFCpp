@@ -17,7 +17,7 @@ public:
 
 	void Write( byte page, byte* data, int len );
 
-	virtual byte* ReadAll() VIRTUAL_FUNC;
+	virtual byte* ReadAll( byte numPages ) VIRTUAL_FUNC;
 	virtual void WriteAll( byte* data, int len ) VIRTUAL_FUNC;
 
 	//virtual void NDEFFormat();
