@@ -44,18 +44,26 @@ int main()
 
 			std::cout << std::endl << "Put a card on reader '" << reader->getName() << "'.." << std::endl;
 			NFCTag* tag = NULL;
+			bool unsupported = false; // used to debounce "Unsupported card" message
 			while( tag == NULL ) 
 			{
 				try
 				{
 					tag = reader->Connect();
+					unsupported = false;
 				}
 				catch (std::runtime_error) {
-					_sleep( 100 );
+					if( unsupported == false )
+					{
+						unsupported = true;
+						std::cout << "Unsupported card" << std::endl;
+					}
 				}
+					_sleep( 100 );
 			}
 			uint8_t numPages = 225;
-			uint8_t* t = tag->ReadAll( numPages );
+			uint8_t* data = new uint8_t[numPages * 4];
+			int readLen = tag->ReadAll( numPages, data );
 
 			std::cout << std::endl << "[page]: b0 b1 b2 b3";
 			for( int page = 0; page < numPages; page++ )
@@ -67,20 +75,20 @@ int main()
 				std::cout << std::dec <<  page << "]: ";
 				
 				// print raw page bytes
-				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 0] << " ";
-				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 1] << " ";
-				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 2] << " ";
-				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)t[page * 4 + 3] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)data[page * 4 + 0] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)data[page * 4 + 1] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)data[page * 4 + 2] << " ";
+				std::cout.width( 2 ); std::cout.fill( '0' ); std::cout << std::uppercase << std::hex << (int)data[page * 4 + 3] << " ";
 				
 				// print ascii content where possible, filled lock (ASCII 178) where non-printable characters are
 				std::cout << " | ";
-				std::cout << (t[page * 4 + 0] == 0 ? ' ' : (isprint( t[page * 4 + 0] ) ? (char)t[page * 4 + 0] : (char)178)) << " ";
-				std::cout << (t[page * 4 + 1] == 0 ? ' ' : (isprint( t[page * 4 + 1] ) ? (char)t[page * 4 + 1] : (char)178)) << " ";
-				std::cout << (t[page * 4 + 2] == 0 ? ' ' : (isprint( t[page * 4 + 2] ) ? (char)t[page * 4 + 2] : (char)178)) << " ";
-				std::cout << (t[page * 4 + 3] == 0 ? ' ' : (isprint( t[page * 4 + 3] ) ? (char)t[page * 4 + 3] : (char)178)) << " ";
+				std::cout << (data[page * 4 + 0] == 0 ? ' ' : (isprint( data[page * 4 + 0] ) ? (char)data[page * 4 + 0] : (char)178)) << " ";
+				std::cout << (data[page * 4 + 1] == 0 ? ' ' : (isprint( data[page * 4 + 1] ) ? (char)data[page * 4 + 1] : (char)178)) << " ";
+				std::cout << (data[page * 4 + 2] == 0 ? ' ' : (isprint( data[page * 4 + 2] ) ? (char)data[page * 4 + 2] : (char)178)) << " ";
+				std::cout << (data[page * 4 + 3] == 0 ? ' ' : (isprint( data[page * 4 + 3] ) ? (char)data[page * 4 + 3] : (char)178)) << " ";
 
 			}
-			delete[] t;
+			delete[] data;
 		}
 
 		handler.Release();

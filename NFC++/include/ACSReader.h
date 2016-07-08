@@ -19,12 +19,12 @@ public:
 	virtual void LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t* keyData );
 	virtual void Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t sector );
 
-	virtual uint8_t* Read( SCARDHANDLE handle, int proto, uint8_t page );
+	virtual int Read( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* dest );
 	virtual void Write( SCARDHANDLE handle, int proto, uint8_t Page, uint8_t* Data, int len );
 
-	virtual uint8_t*   ParseUID( SCARDHANDLE handle, int proto );
+	virtual int GetUID( SCARDHANDLE handle, int proto, uint8_t* dest );
 	virtual TagType ParseATR( uint8_t* bATR, int ATRlen );
 
 private:
-	virtual uint8_t* Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, int len );
+	virtual int Transmit( SCARDHANDLE handle, int proto, uint8_t* command, int len, uint8_t* response );
 };

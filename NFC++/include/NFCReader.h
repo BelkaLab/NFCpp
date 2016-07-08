@@ -19,10 +19,10 @@ public:
 	virtual void LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t* keyData ) VIRTUAL_FUNC;
 	virtual void Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t sector ) VIRTUAL_FUNC;
 
-	virtual uint8_t* Read( SCARDHANDLE handle, int proto, uint8_t page ) VIRTUAL_FUNC;
+	virtual int Read( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* dest ) VIRTUAL_FUNC;
  	virtual void Write( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* data, int len ) VIRTUAL_FUNC;
 
-	virtual uint8_t* ParseUID( SCARDHANDLE handle, int proto ) VIRTUAL_FUNC;
+	virtual int GetUID( SCARDHANDLE handle, int proto, uint8_t* dest ) VIRTUAL_FUNC;
 	virtual TagType ParseATR( uint8_t* bATR, int ATRLen ) VIRTUAL_FUNC;
 
 	// pooling thread 
@@ -32,7 +32,7 @@ public:
 	//TagFoundHandler tagFound;
 
 protected:
-	uint8_t* GetATR( SCARDHANDLE handle, int proto, int* ATRLen );
+	int GetATR( SCARDHANDLE handle, int proto, uint8_t* dest );
 	NFCTag* BuildTag( SCARDHANDLE handle, int proto, uint8_t* ATR, int ATRLen );
 
 	SCARDCONTEXT hContext;
@@ -40,7 +40,7 @@ protected:
 	bool stopPollingSignal;
 
 private:
-	virtual uint8_t* Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, int len ) VIRTUAL_FUNC;
+	virtual int Transmit( SCARDHANDLE handle, int proto, uint8_t* command, int len, uint8_t* response ) VIRTUAL_FUNC;
 
 	HANDLE pollerThread;
 };

@@ -30,7 +30,7 @@ public:
 	//	Write( 0x04, new uint8_t[]{ 0x03, 0x00, 0xFE, 0x00 } ); // Empty NDEF record plus terminator
 	//}
 
-	uint8_t* ReadAll( uint8_t numPages );
+	int ReadAll( uint8_t numPages, uint8_t* dest );
 
 	void WriteAll( uint8_t* data, int len );
 

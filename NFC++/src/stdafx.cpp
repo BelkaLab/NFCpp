@@ -17,7 +17,7 @@ std::string BytesToHex( uint8_t* bytes, int numBytes )
 	return hex;
 }
 
-uint8_t* HexToBytes( std::string payload )
+uint8_t* HexToBytes( std::string payload, int* numBytes )
 {
 	while( payload.find( " " ) ) 
 	{
@@ -35,6 +35,8 @@ uint8_t* HexToBytes( std::string payload )
 	{
 		bytes[index] = 0xFF & strtoul( payload.substr( index * 2, 2 ).c_str(), NULL, 16 );
 	}
+	
+	*numBytes = payload.length() / 2;
 	return bytes;
 }
 

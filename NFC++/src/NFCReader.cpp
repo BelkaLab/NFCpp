@@ -10,7 +10,7 @@ NFCReader::NFCReader( SCARDCONTEXT context, std::string readerName )
 	pollerThread = NULL;
 }
 
-uint8_t* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
+int NFCReader::GetATR( SCARDHANDLE handle, int proto, uint8_t* dest )
 {
 	TCHAR* rName = new TCHAR[256];
 	DWORD rLength = 0, maxATRLen = 32, dwState = 0, proto_;
@@ -24,12 +24,10 @@ uint8_t* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
 		throw std::runtime_error( "Failed querying tag status: " + GetScardErrMsg( retCode ) );
 	}
 
-	uint8_t* ATR = new uint8_t[maxATRLen];
-	memcpy( ATR, ATRBytes, maxATRLen );
+	memcpy( dest, ATRBytes, maxATRLen );
 	delete[] ATRBytes;
 
-	(*ATRLen) = maxATRLen;
-	return ATR;
+	return maxATRLen;
 }
 
 NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, uint8_t* ATR, int ATRLen )

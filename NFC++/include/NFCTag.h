@@ -13,11 +13,11 @@ public:
 	void LoadKey( KeyTypes keyType, uint8_t* keyData );
 	void Authenticate( KeyTypes keyType, uint8_t sector );
 
-	uint8_t* Read( uint8_t page );
+	int Read( uint8_t page, uint8_t* dest );
 
 	void Write( uint8_t page, uint8_t* data, int len );
 
-	virtual uint8_t* ReadAll( uint8_t numPages ) VIRTUAL_FUNC;
+	virtual int ReadAll( uint8_t numPages, uint8_t* dest ) VIRTUAL_FUNC;
 	virtual void WriteAll( uint8_t* data, int len ) VIRTUAL_FUNC;
 
 	//virtual void NDEFFormat();

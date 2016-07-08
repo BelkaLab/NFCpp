@@ -32,7 +32,7 @@
 #include <exception>
 
 std::string BytesToHex( uint8_t* bytes, int numBytes );
-uint8_t* HexToBytes( std::string payload );
+uint8_t* HexToBytes( std::string payload, int* numBytes );
 const int SCARD_INFINITE_WAIT = -1;
 
 std::string GetScardErrMsg( LONG returnCode );

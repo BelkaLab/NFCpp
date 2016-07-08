@@ -173,9 +173,13 @@ TagType ACSReader::ParseATR( uint8_t* bATR, int ATRLen )
 	return type;
 }
 
-uint8_t* ACSReader::ParseUID( SCARDHANDLE handle, int proto )
+int ACSReader::GetUID( SCARDHANDLE handle, int proto, uint8_t* dest )
 {
-	return Transmit( handle, proto, new uint8_t[5]{ 0xFF, 0xCA, 0x00, 0x00, 0x00 }, 5 );
+	uint8_t* command = new uint8_t[5]{ 0xFF, 0xCA, 0x00, 0x00, 0x00 };
+	int responseLength = Transmit( handle, proto, command, 5, dest );
+	delete[] command;
+
+	return responseLength;
 }
 
 NFCTag* ACSReader::Connect()
@@ -183,30 +187,40 @@ NFCTag* ACSReader::Connect()
 	SCARDHANDLE handle;
 	DWORD proto = 0;
 
-	int ATRLen;
 	LONG retCode = SCardConnect( hContext, s2ws( name ).c_str(), SCARD_SHARE_SHARED,
 		SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &handle, &proto );
 
+	if( retCode == SCARD_W_REMOVED_CARD )
+	{
+		// no card found
+		return NULL;
+	}
 	if( retCode != SCARD_S_SUCCESS )
 		throw std::runtime_error( "Error creating a connection: " + GetScardErrMsg( retCode ) );
 
 	//name = ws2s( tName );
-	uint8_t* ATR = GetATR( handle, proto, &ATRLen );
 
-	return BuildTag( handle, proto, ATR, ATRLen );
+	uint8_t* ATR = new uint8_t[32];
+	int ATRLen = GetATR( handle, proto, ATR );
+
+	NFCTag* tag = BuildTag( handle, proto, ATR, ATRLen );
+	delete[] ATR;
+	
+	return tag;
 }
 
 void ACSReader::LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t* keyData )
 {
-	//if( keyData.Length != 6 )
-	//	throw std::invalid_argument( "Keys must be 6 uint8_t long" );
-
 	uint8_t KeyT = keyType == KeyTypes::TypeA ? (uint8_t)0x60 : (uint8_t)0x61;
 	uint8_t KeyN = keyType == KeyTypes::TypeA ? (uint8_t)0x00 : (uint8_t)0x01;
 
-	Transmit( handle, proto, new uint8_t[11]{ 0xFF, 0x82, 0x00, KeyN, 0x06,
-		keyData[0], keyData[1], keyData[2], keyData[3], keyData[4], keyData[5] }, 11 );
-	return;
+
+	uint8_t* command = new uint8_t[11]{ 0xFF, 0x82, 0x00, KeyN, 0x06, 0, 0, 0, 0, 0, 0 };
+	// add data from byte 6 onwards
+	memcpy( &command[5], keyData, 6 );
+
+	Transmit( handle, proto, command, 11, NULL );
+	delete[] command;
 }
 
 void ACSReader::Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t sector )
@@ -214,14 +228,20 @@ void ACSReader::Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, u
 	uint8_t KeyT = keyType == KeyTypes::TypeA ? (uint8_t)0x60 : (uint8_t)0x61;
 	uint8_t KeyN = keyType == KeyTypes::TypeA ? (uint8_t)0x00 : (uint8_t)0x01;
 
-	Transmit( handle, proto, new uint8_t[11]{ 0xFF, 0x86, 0x00, 0x00, 0x05,
-		0x01, 0x00, sector, KeyT, KeyN }, 11 );
-	return;
+
+	uint8_t* command = new uint8_t[11]{ 0xFF, 0x86, 0x00, 0x00, 0x05, 0x01, 0x00, sector, KeyT, KeyN };
+
+	Transmit( handle, proto, command, 11, NULL );
+	delete[] command;
 }
 
-uint8_t* ACSReader::Read( SCARDHANDLE handle, int proto, uint8_t page )
+int ACSReader::Read( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* dest )
 {
-	return Transmit( handle, proto, new uint8_t[5]{ 0xFF, 0xB0, 0x00, page, 0x04 }, 5 );
+	uint8_t* command = new uint8_t[5]{ 0xFF, 0xB0, 0x00, page, 0x04 };
+	int responseLength = Transmit( handle, proto, command, 5, dest );
+
+	delete[] command;
+	return responseLength;
 }
 
 void ACSReader::Write( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* data, int len )
@@ -229,13 +249,15 @@ void ACSReader::Write( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* dat
 	if( len != 4 ) 
 		throw std::invalid_argument( "Page write must be of 4 bytes" );
 
-	uint8_t* buffer = new uint8_t[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
-	// add data from uint8_t 5 on
-	memcpy( &buffer[5], data, 4 );
-	Transmit( handle, proto, buffer, 9 );
+	uint8_t* command = new uint8_t[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
+	// add data from byte 6 onwards
+	memcpy( &command[5], data, 4 );
+
+	Transmit( handle, proto, command, 9, NULL );
+	delete[] command;
 }
 
-uint8_t* ACSReader::Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, int len )
+int ACSReader::Transmit( SCARDHANDLE handle, int proto, uint8_t* command, int len, uint8_t* response )
 {
 	SCARD_IO_REQUEST ioRequest;
 	ioRequest.dwProtocol = proto;
@@ -245,7 +267,7 @@ uint8_t* ACSReader::Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, 
 	uint8_t* rcvBytes = new uint8_t[rcvLenght];
 
 	LONG retCode = SCardTransmit( handle,
-		&ioRequest, cmdBytes, len,
+		&ioRequest, command, len,
 		&ioRequest, rcvBytes, &rcvLenght );
 
 	if( retCode != SCARD_S_SUCCESS )
@@ -254,19 +276,20 @@ uint8_t* ACSReader::Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, 
 	if( !(rcvBytes[rcvLenght - 2] == 0x90 && rcvBytes[rcvLenght - 1] == 0x00) )
 	{
 		if( rcvBytes[rcvLenght - 2] == 0x63 && rcvBytes[rcvLenght - 1] == 0x00 )
-			throw std::runtime_error( "Operation failed!" );
+			throw std::runtime_error( "Transmit failed!" );
 
 		if( rcvBytes[rcvLenght - 2] == 0x6A && rcvBytes[rcvLenght - 1] == 0x81 )
-			throw std::runtime_error( "Operation not supported!" );
+			throw std::runtime_error( "Transmit: operation code not supported!" );
 
-		char buff[256];
-		sprintf_s( buff, "Operation returned %02X %02X", rcvBytes[rcvLenght - 2], rcvBytes[rcvLenght - 1] );
-		throw std::runtime_error( buff );
+		throw std::runtime_error( "Transmit failed, returned: " + BytesToHex( &rcvBytes[rcvLenght - 2], 2 ) );
 	}
 
-	uint8_t* returnBytes = new uint8_t[rcvLenght - 2];
-	memcpy( returnBytes, rcvBytes, rcvLenght - 2 );
+	// response length is the length of the received payload - 2 CRC bytes
+	int responseLen = rcvLenght - 2;
+
+	if( response != NULL )
+		memcpy( response, rcvBytes, responseLen );
 	delete[] rcvBytes;
 
-	return returnBytes;
+	return responseLen;
 }
