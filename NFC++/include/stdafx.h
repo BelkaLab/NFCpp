@@ -31,8 +31,8 @@
 
 #include <exception>
 
-std::string BytesToHex( byte* bytes, int numBytes );
-byte* HexToBytes( std::string payload );
+std::string BytesToHex( uint8_t* bytes, int numBytes );
+uint8_t* HexToBytes( std::string payload );
 const int SCARD_INFINITE_WAIT = -1;
 
 std::string GetScardErrMsg( LONG returnCode );

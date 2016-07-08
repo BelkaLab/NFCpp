@@ -10,12 +10,12 @@ NFCReader::NFCReader( SCARDCONTEXT context, std::string readerName )
 	pollerThread = NULL;
 }
 
-byte* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
+uint8_t* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
 {
 	TCHAR* rName = new TCHAR[256];
 	DWORD rLength = 0, maxATRLen = 32, dwState = 0, proto_;
 	proto_ = proto;
-	byte* ATRBytes = new byte[maxATRLen];
+	uint8_t* ATRBytes = new uint8_t[maxATRLen];
 
 	LONG retCode = SCardStatus( handle, rName, &rLength, &dwState, &proto_, &ATRBytes[0], &maxATRLen );
 
@@ -24,7 +24,7 @@ byte* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
 		throw std::runtime_error( "Failed querying tag status: " + GetScardErrMsg( retCode ) );
 	}
 
-	byte* ATR = new byte[maxATRLen];
+	uint8_t* ATR = new uint8_t[maxATRLen];
 	memcpy( ATR, ATRBytes, maxATRLen );
 	delete[] ATRBytes;
 
@@ -32,7 +32,7 @@ byte* NFCReader::GetATR( SCARDHANDLE handle, int proto, int* ATRLen )
 	return ATR;
 }
 
-NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, byte* ATR, int ATRLen )
+NFCTag* NFCReader::BuildTag( SCARDHANDLE handle, int proto, uint8_t* ATR, int ATRLen )
 {
 	TagType type = ParseATR( ATR, ATRLen );
 	switch( type )

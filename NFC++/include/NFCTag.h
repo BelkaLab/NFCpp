@@ -8,17 +8,17 @@ class NFCTag
 {
 public:
 	NFCTag() {}
-	NFCTag( SCARDHANDLE handle, int Proto, NFCReader* reader, byte* ATRbytes );
+	NFCTag( SCARDHANDLE handle, int Proto, NFCReader* reader, uint8_t* ATRbytes );
 
-	void LoadKey( KeyTypes keyType, byte* keyData );
-	void Authenticate( KeyTypes keyType, byte sector );
+	void LoadKey( KeyTypes keyType, uint8_t* keyData );
+	void Authenticate( KeyTypes keyType, uint8_t sector );
 
-	byte* Read( byte page );
+	uint8_t* Read( uint8_t page );
 
-	void Write( byte page, byte* data, int len );
+	void Write( uint8_t page, uint8_t* data, int len );
 
-	virtual byte* ReadAll( byte numPages ) VIRTUAL_FUNC;
-	virtual void WriteAll( byte* data, int len ) VIRTUAL_FUNC;
+	virtual uint8_t* ReadAll( uint8_t numPages ) VIRTUAL_FUNC;
+	virtual void WriteAll( uint8_t* data, int len ) VIRTUAL_FUNC;
 
 	//virtual void NDEFFormat();
 	//NdefMessage NDEFRead();
@@ -34,8 +34,8 @@ protected:
 	int proto;
 	NFCReader* reader;
 
-	byte* bATR;
+	uint8_t* bATR;
 	std::string ATR;
-	byte* bUID;
+	uint8_t* bUID;
 	std::string UID;
 };

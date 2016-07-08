@@ -2,7 +2,7 @@
 #include "NFCTag.h"
 #include "ACSReader.h"
 
-TagType ACSReader::ParseATR( byte* bATR, int ATRLen )
+TagType ACSReader::ParseATR( uint8_t* bATR, int ATRLen )
 {
 	TagType type = TagType::TagType_Unknown;
 
@@ -173,9 +173,9 @@ TagType ACSReader::ParseATR( byte* bATR, int ATRLen )
 	return type;
 }
 
-byte* ACSReader::ParseUID( SCARDHANDLE handle, int proto )
+uint8_t* ACSReader::ParseUID( SCARDHANDLE handle, int proto )
 {
-	return Transmit( handle, proto, new byte[5]{ 0xFF, 0xCA, 0x00, 0x00, 0x00 }, 5 );
+	return Transmit( handle, proto, new uint8_t[5]{ 0xFF, 0xCA, 0x00, 0x00, 0x00 }, 5 );
 }
 
 NFCTag* ACSReader::Connect()
@@ -191,58 +191,58 @@ NFCTag* ACSReader::Connect()
 		throw std::runtime_error( "Error creating a connection: " + GetScardErrMsg( retCode ) );
 
 	//name = ws2s( tName );
-	byte* ATR = GetATR( handle, proto, &ATRLen );
+	uint8_t* ATR = GetATR( handle, proto, &ATRLen );
 
 	return BuildTag( handle, proto, ATR, ATRLen );
 }
 
-void ACSReader::LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, byte* keyData )
+void ACSReader::LoadKey( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t* keyData )
 {
 	//if( keyData.Length != 6 )
-	//	throw std::invalid_argument( "Keys must be 6 byte long" );
+	//	throw std::invalid_argument( "Keys must be 6 uint8_t long" );
 
-	byte KeyT = keyType == KeyTypes::TypeA ? (byte)0x60 : (byte)0x61;
-	byte KeyN = keyType == KeyTypes::TypeA ? (byte)0x00 : (byte)0x01;
+	uint8_t KeyT = keyType == KeyTypes::TypeA ? (uint8_t)0x60 : (uint8_t)0x61;
+	uint8_t KeyN = keyType == KeyTypes::TypeA ? (uint8_t)0x00 : (uint8_t)0x01;
 
-	Transmit( handle, proto, new byte[11]{ 0xFF, 0x82, 0x00, KeyN, 0x06,
+	Transmit( handle, proto, new uint8_t[11]{ 0xFF, 0x82, 0x00, KeyN, 0x06,
 		keyData[0], keyData[1], keyData[2], keyData[3], keyData[4], keyData[5] }, 11 );
 	return;
 }
 
-void ACSReader::Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, byte sector )
+void ACSReader::Authenticate( SCARDHANDLE handle, int proto, KeyTypes keyType, uint8_t sector )
 {
-	byte KeyT = keyType == KeyTypes::TypeA ? (byte)0x60 : (byte)0x61;
-	byte KeyN = keyType == KeyTypes::TypeA ? (byte)0x00 : (byte)0x01;
+	uint8_t KeyT = keyType == KeyTypes::TypeA ? (uint8_t)0x60 : (uint8_t)0x61;
+	uint8_t KeyN = keyType == KeyTypes::TypeA ? (uint8_t)0x00 : (uint8_t)0x01;
 
-	Transmit( handle, proto, new byte[11]{ 0xFF, 0x86, 0x00, 0x00, 0x05,
+	Transmit( handle, proto, new uint8_t[11]{ 0xFF, 0x86, 0x00, 0x00, 0x05,
 		0x01, 0x00, sector, KeyT, KeyN }, 11 );
 	return;
 }
 
-byte* ACSReader::Read( SCARDHANDLE handle, int proto, byte page )
+uint8_t* ACSReader::Read( SCARDHANDLE handle, int proto, uint8_t page )
 {
-	return Transmit( handle, proto, new byte[5]{ 0xFF, 0xB0, 0x00, page, 0x04 }, 5 );
+	return Transmit( handle, proto, new uint8_t[5]{ 0xFF, 0xB0, 0x00, page, 0x04 }, 5 );
 }
 
-void ACSReader::Write( SCARDHANDLE handle, int proto, byte page, byte* data, int len )
+void ACSReader::Write( SCARDHANDLE handle, int proto, uint8_t page, uint8_t* data, int len )
 {
 	if( len != 4 ) 
 		throw std::invalid_argument( "Page write must be of 4 bytes" );
 
-	byte* buffer = new byte[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
-	// add data from byte 5 on
+	uint8_t* buffer = new uint8_t[9]{ 0xFF, 0xD6, 0x00, page, 0x04, 0x00, 0x00, 0x00, 0x00 };
+	// add data from uint8_t 5 on
 	memcpy( &buffer[5], data, 4 );
 	Transmit( handle, proto, buffer, 9 );
 }
 
-byte* ACSReader::Transmit( SCARDHANDLE handle, int proto, byte* cmdBytes, int len )
+uint8_t* ACSReader::Transmit( SCARDHANDLE handle, int proto, uint8_t* cmdBytes, int len )
 {
 	SCARD_IO_REQUEST ioRequest;
 	ioRequest.dwProtocol = proto;
 	ioRequest.cbPciLength = 8;
 
 	DWORD rcvLenght = 32; // Use 260 to handle more intelligent smartcards
-	byte* rcvBytes = new byte[rcvLenght];
+	uint8_t* rcvBytes = new uint8_t[rcvLenght];
 
 	LONG retCode = SCardTransmit( handle,
 		&ioRequest, cmdBytes, len,
@@ -264,7 +264,7 @@ byte* ACSReader::Transmit( SCARDHANDLE handle, int proto, byte* cmdBytes, int le
 		throw std::runtime_error( buff );
 	}
 
-	byte* returnBytes = new byte[rcvLenght - 2];
+	uint8_t* returnBytes = new uint8_t[rcvLenght - 2];
 	memcpy( returnBytes, rcvBytes, rcvLenght - 2 );
 	delete[] rcvBytes;
 
