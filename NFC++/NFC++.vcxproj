@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClInclude Include="include\ACSReader.h" />
     <ClInclude Include="include\Enums.h" />
+    <ClInclude Include="include\NFC++-version.h" />
     <ClInclude Include="include\NFC++.h" />
     <ClInclude Include="include\NFCReader.h" />
     <ClInclude Include="include\NFCTag.h" />

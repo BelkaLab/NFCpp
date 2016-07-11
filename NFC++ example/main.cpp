@@ -7,7 +7,8 @@
 int main()
 {
 	NFCHandler handler;
-	std::cout << "=== NFC++.dll example usage ===" << std::endl << std::endl;
+	std::cout << "=== NFC++.dll example usage ===" << std::endl;
+	std::cout << "=== Library version: " << NFCPP_VERSION << " ===" << std::endl << std::endl;
 
 	try
 	{

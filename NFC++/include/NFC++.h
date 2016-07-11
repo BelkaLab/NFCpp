@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "NFC++-version.h"
 #include "NFCReader.h"
 
 // This class is exported from the NFC++.dll
