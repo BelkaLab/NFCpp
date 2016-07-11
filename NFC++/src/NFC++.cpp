@@ -49,7 +49,6 @@ void NFCHandler::Init()
 	// <reader1name>\0<reader2name>\0..<readerXname>\0\0
 	int idxBytes = 0;
 	std::string rdrName = "";
-	std::string* readersNames = new std::string[pcchReaders];
 	while( ReadersList[idxBytes] != 0 )
 	{
 		while( ReadersList[idxBytes] != 0 )
@@ -74,6 +73,23 @@ void NFCHandler::Init()
 		rdrName = "";
 		idxBytes++;
 	}
+}
+
+NFCReader* NFCHandler::GetReader( int i ) const
+{
+	if( i < 0 || i >= readers.size() )
+		return NULL;
+
+	return readers[i];
+}
+
+NFCReader* NFCHandler::GetReaderByName( const char* name ) const
+{
+	for( int i = 0; i < readers.size(); i++ )
+		if( strcmp( name, readers[i]->GetName() ) == 0 )
+			return readers[i];
+	
+	return NULL;
 }
 
 void NFCHandler::Release()

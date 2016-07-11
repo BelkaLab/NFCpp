@@ -17,31 +17,26 @@ int main()
 		handler.Init();
 		std::cout << "Done!" << std::endl;
 
-		std::cout << "Listing NFC Readers.. ";
-		std::vector< NFCReader* > readers = handler.GetReaders();
-		std::cout << "Done!" << std::endl;
-
-		if( readers.size() == 0 )
+		if( handler.GetReadersCount() == 0 )
 		{
 			std::cout << "No reader found." << std::endl;
 		}
 		else
 		{
 			std::cout << std::endl << "Available readers: " << std::endl;
-			int readerIx = 0;
-			for( std::vector< NFCReader* >::iterator it = readers.begin(); it != readers.end(); ++it )
+			for( int readerIx = 0; readerIx < handler.GetReadersCount(); readerIx++ )
 			{
-				std::cout << " " << readerIx++ << ": " << (*it)->GetName() << std::endl;
+				std::cout << " " << readerIx << ": " << handler.GetReader( readerIx )->GetName() << std::endl;
 			}
 
 			int rID = -1;
-			while( rID < 0 || rID >= readers.size() )
+			while( rID < 0 || rID >= handler.GetReadersCount() )
 			{
 				std::cout << "Select a reader: ";
 				std::cin >> rID;
 			}
 
-			NFCReader* reader = readers[rID];
+			NFCReader* reader = handler.GetReader( rID );
 
 			std::cout << std::endl << "Put a card on reader '" << reader->GetName() << "'.." << std::endl;
 			NFCTag* tag = NULL;
@@ -60,7 +55,7 @@ int main()
 						std::cout << "Unsupported card" << std::endl;
 					}
 				}
-					_sleep( 100 );
+				Sleep( 100 );
 			}
 			uint8_t numPages = 225;
 			uint8_t* data = new uint8_t[numPages * 4];

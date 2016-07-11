@@ -2,12 +2,22 @@
 #include "NFCReader.h"
 #include "UltralightTag.h"
 
+NFCReader::NFCReader() :
+	name( NULL )
+{
+}
+
 NFCReader::NFCReader( SCARDCONTEXT context, std::string readerName )
 {
 	hContext = context;
-	name = readerName;
+	name = _strdup(readerName.c_str());
 
 	pollerThread = NULL;
+}
+
+NFCReader::~NFCReader()
+{
+	delete[] name;
 }
 
 int NFCReader::GetATR( SCARDHANDLE handle, int proto, uint8_t* dest )
