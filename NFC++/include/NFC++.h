@@ -15,7 +15,7 @@ public:
 
 	bool IsInitialized() const { return hContext != NULL; }
 
-	const std::vector< NFCReader* > getReaders() const {
+	const std::vector< NFCReader* > GetReaders() const {
 		return readers;
 	}
 	

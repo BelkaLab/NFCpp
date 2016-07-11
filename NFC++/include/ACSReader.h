@@ -12,7 +12,6 @@ public:
 	{
 	};
 
-
 	// Virtual functions implementations
 	virtual NFCTag* Connect();
 

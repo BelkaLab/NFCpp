@@ -175,7 +175,6 @@
     <ClInclude Include="include\NFCReader.h" />
     <ClInclude Include="include\NFCTag.h" />
     <ClInclude Include="include\stdafx.h" />
-    <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\UltralightTag.h" />
   </ItemGroup>
   <ItemGroup>

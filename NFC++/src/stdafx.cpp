@@ -36,7 +36,7 @@ uint8_t* HexToBytes( std::string payload, int* numBytes )
 		bytes[index] = 0xFF & strtoul( payload.substr( index * 2, 2 ).c_str(), NULL, 16 );
 	}
 	
-	*numBytes = payload.length() / 2;
+	*numBytes = (int)payload.length() / 2;
 	return bytes;
 }
 

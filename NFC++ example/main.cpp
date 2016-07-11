@@ -17,7 +17,7 @@ int main()
 		std::cout << "Done!" << std::endl;
 
 		std::cout << "Listing NFC Readers.. ";
-		std::vector< NFCReader* > readers = handler.getReaders();
+		std::vector< NFCReader* > readers = handler.GetReaders();
 		std::cout << "Done!" << std::endl;
 
 		if( readers.size() == 0 )
@@ -30,7 +30,7 @@ int main()
 			int readerIx = 0;
 			for( std::vector< NFCReader* >::iterator it = readers.begin(); it != readers.end(); ++it )
 			{
-				std::cout << " " << readerIx++ << ": " << (*it)->getName() << std::endl;
+				std::cout << " " << readerIx++ << ": " << (*it)->GetName() << std::endl;
 			}
 
 			int rID = -1;
@@ -42,7 +42,7 @@ int main()
 
 			NFCReader* reader = readers[rID];
 
-			std::cout << std::endl << "Put a card on reader '" << reader->getName() << "'.." << std::endl;
+			std::cout << std::endl << "Put a card on reader '" << reader->GetName() << "'.." << std::endl;
 			NFCTag* tag = NULL;
 			bool unsupported = false; // used to debounce "Unsupported card" message
 			while( tag == NULL ) 

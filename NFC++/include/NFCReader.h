@@ -10,8 +10,8 @@ class NFC_API NFCReader
 public:
 	NFCReader() {}
 	NFCReader( SCARDCONTEXT context, std::string readerName );
-	std::string getName() const { return name; }
-	SCARDCONTEXT getContext() const { return hContext; }
+	std::string GetName() const { return name; }
+	SCARDCONTEXT GetContext() const { return hContext; }
 
 	// Virtual functions to be implemented by subclasses
 	virtual NFCTag* Connect() VIRTUAL_FUNC;
@@ -37,7 +37,7 @@ protected:
 
 	SCARDCONTEXT hContext;
 	std::string name;
-	bool stopPollingSignal;
+	//bool stopPollingSignal;
 
 private:
 	virtual int Transmit( SCARDHANDLE handle, int proto, uint8_t* command, int len, uint8_t* response ) VIRTUAL_FUNC;
