@@ -16,18 +16,18 @@
 #define NFCPP_VERSION        "0.1.0"
 
 /* Numerically encoded version, like 0x010203 */
-#define NFCPP_VERSION_HEX ((LIBMODBUS_VERSION_MAJOR << 24) |  \
-                           (LIBMODBUS_VERSION_MINOR << 16) |  \
-                           (LIBMODBUS_VERSION_MICRO << 8))
+#define NFCPP_VERSION_HEX ((NFCPP_VERSION_MAJOR << 16) |  \
+                           (NFCPP_VERSION_MINOR << 8) |  \
+                           (NFCPP_VERSION_PATCH << 0))
 
 /* Evaluates to True if the version is greater than @major, @minor and @patch
 */
 #define NFCPP_VERSION_CHECK(major,minor,patch)      \
-    (LIBMODBUS_VERSION_MAJOR > (major) ||               \
-     (LIBMODBUS_VERSION_MAJOR == (major) &&             \
-      LIBMODBUS_VERSION_MINOR > (minor)) ||             \
-     (LIBMODBUS_VERSION_MAJOR == (major) &&             \
-      LIBMODBUS_VERSION_MINOR == (minor) &&             \
-      LIBMODBUS_VERSION_MICRO >= (patch)))
+    (NFCPP_VERSION_MAJOR > (major) ||               \
+     (NFCPP_VERSION_MAJOR == (major) &&             \
+      NFCPP_VERSION_MINOR > (minor)) ||             \
+     (NFCPP_VERSION_MAJOR == (major) &&             \
+      NFCPP_VERSION_MINOR == (minor) &&             \
+      NFCPP_VERSION_PATCH >= (patch)))
 
 #endif /* NFCPP_VERSION_H */
