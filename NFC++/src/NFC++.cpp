@@ -75,17 +75,17 @@ void NFCHandler::Init()
 	}
 }
 
-NFCReader* NFCHandler::GetReader( int i ) const
+NFCReader* NFCHandler::GetReader( size_t readerIx ) const
 {
-	if( i < 0 || i >= readers.size() )
+	if( readerIx < 0 || readerIx >= readers.size() )
 		return NULL;
 
-	return readers[i];
+	return readers[readerIx];
 }
 
 NFCReader* NFCHandler::GetReaderByName( const char* name ) const
 {
-	for( int i = 0; i < readers.size(); i++ )
+	for( size_t i = 0; i < readers.size(); i++ )
 		if( strcmp( name, readers[i]->GetName() ) == 0 )
 			return readers[i];
 	

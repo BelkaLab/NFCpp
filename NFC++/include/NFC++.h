@@ -25,7 +25,7 @@ public:
 		return (int)readers.size();
 	}
 
-	NFCReader* GetReader( int i ) const;
+	NFCReader* GetReader( size_t readerIx ) const;
 	NFCReader* GetReaderByName( const char* name ) const;
 
 private:
