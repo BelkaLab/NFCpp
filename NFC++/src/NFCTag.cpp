@@ -17,26 +17,6 @@ NFCTag::NFCTag( SCARDHANDLE handle, int proto, NFCReader* reader, uint8_t* ATRby
 	UID = BytesToHex(bUID, 32);
 }
 
-void NFCTag::LoadKey( KeyTypes keyType, uint8_t* keyData )
-{
-	reader->LoadKey( handle, proto, keyType, keyData );
-}
-
-void NFCTag::Authenticate( KeyTypes keyType, uint8_t sector )
-{
-	reader->Authenticate( handle, proto, keyType, sector );
-}
-
-int NFCTag::Read( uint8_t page, uint8_t* dest )
-{
-	return reader->Read( handle, proto, page, dest );
-}
-
-void NFCTag::Write( uint8_t page, uint8_t* data, int len )
-{
-	reader->Write( handle, proto, page, data, len );
-}
-
 //NFCTag::NdefMessage NDEFRead()
 //{
 //	return NdefMessage.FromByteArray( ReadAll() );

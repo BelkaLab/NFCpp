@@ -1,6 +1,26 @@
 #include "stdafx.h"
 #include "UltralightTag.h"
 
+void UltralightTag::LoadKey( KeyTypes keyType, uint8_t* keyData )
+{
+	reader->LoadKey( handle, proto, keyType, keyData );
+}
+
+void UltralightTag::Authenticate( KeyTypes keyType, uint8_t sector )
+{
+	reader->Authenticate( handle, proto, keyType, sector );
+}
+
+int UltralightTag::Read( uint8_t page, uint8_t* dest )
+{
+	return reader->Read( handle, proto, page, dest );
+}
+
+void UltralightTag::Write( uint8_t page, uint8_t* data, int len )
+{
+	reader->Write( handle, proto, page, data, len );
+}
+
 // http://stackoverflow.com/questions/28228993/how-to-read-binary-blocks-of-mifare-card
 int UltralightTag::ReadAll( uint8_t numPages, uint8_t* dest )
 {

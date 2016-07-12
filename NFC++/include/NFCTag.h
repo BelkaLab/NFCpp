@@ -10,12 +10,11 @@ public:
 	NFCTag() {}
 	NFCTag( SCARDHANDLE handle, int Proto, NFCReader* reader, uint8_t* ATRbytes );
 
-	void LoadKey( KeyTypes keyType, uint8_t* keyData );
-	void Authenticate( KeyTypes keyType, uint8_t sector );
+	virtual void LoadKey( KeyTypes keyType, uint8_t* keyData ) VIRTUAL_FUNC;
+	virtual void Authenticate( KeyTypes keyType, uint8_t sector ) VIRTUAL_FUNC;
 
-	int Read( uint8_t page, uint8_t* dest );
-
-	void Write( uint8_t page, uint8_t* data, int len );
+	virtual int Read( uint8_t page, uint8_t* dest ) VIRTUAL_FUNC;
+	virtual void Write( uint8_t page, uint8_t* data, int len ) VIRTUAL_FUNC;
 
 	virtual int ReadAll( uint8_t numPages, uint8_t* dest ) VIRTUAL_FUNC;
 	virtual void WriteAll( uint8_t* data, int len ) VIRTUAL_FUNC;
