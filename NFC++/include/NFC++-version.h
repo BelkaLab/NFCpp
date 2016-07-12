@@ -10,10 +10,10 @@
 #define NFCPP_VERSION_MINOR 1
 
 /* The patch version (3, if %NFCPP_VERSION is 1.2.3) */
-#define NFCPP_VERSION_PATCH 0
+#define NFCPP_VERSION_PATCH 1
 
 /* The full version, like 1.2.3 */
-#define NFCPP_VERSION        "0.1.0"
+#define NFCPP_VERSION        "0.1.1"
 
 /* Numerically encoded version, like 0x010203 */
 #define NFCPP_VERSION_HEX ((NFCPP_VERSION_MAJOR << 16) |  \
