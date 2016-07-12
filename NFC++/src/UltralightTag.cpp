@@ -38,12 +38,12 @@ int UltralightTag::ReadAll( uint8_t numPages, uint8_t* dest )
 	return readBytes;
 }
 
-void UltralightTag::WriteAll( uint8_t* data, int len )
+void UltralightTag::WriteAll( uint8_t numPages, uint8_t* data )
 {
 	const uint8_t chunkSize = 0x04;
 
 	uint8_t* pageContent = new uint8_t[chunkSize];
-	for( int pageIx = 0; pageIx < (len / chunkSize); pageIx++ )
+	for( int pageIx = 0; pageIx < numPages; pageIx++ )
 	{
 		memcpy( pageContent, &data[ pageIx * chunkSize], chunkSize );
 		Write( (uint8_t)pageIx, pageContent, chunkSize );
