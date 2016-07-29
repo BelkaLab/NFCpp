@@ -22,7 +22,12 @@ void NFCHandler::Init()
 	// Get context
 	LONG retCode = SCardEstablishContext( SCARD_SCOPE_USER, NULL, NULL, &hContext );
 
-	if( retCode != SCARD_S_SUCCESS )
+	if( retCode == SCARD_E_NO_SERVICE )
+	{
+		// The smart card resource manager is not running
+		return;
+	}
+	else if( retCode != SCARD_S_SUCCESS )
 	{
 		throw std::runtime_error( "Failed extablishing context: " + GetScardErrMsg( retCode ) );
 	}
